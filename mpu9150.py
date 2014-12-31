@@ -1,13 +1,8 @@
-#!/usr/bin/python
-import Adafruit_GPIO.I2C as i2c
-
 class mpu9150:
+    ACCEL_XOUT_L = 0x3b
 
-	def readAccX(self):
-		return 0
+    def __init__(self, i2c_bus):
+        self.i2c = i2c_bus
 
-	def readAccY(self):
-		return 0
-	
-	def readAccZ(self):
-		return 0
+    def read_x_acc(self):
+        return self.i2c.read_word(self.ACCEL_XOUT_L)
