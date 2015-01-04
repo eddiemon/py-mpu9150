@@ -30,17 +30,12 @@ class TestMPU9150(unittest.TestCase):
         self.i2c = self.i2cMock()
         self.imu = mpu9150(self.i2c)
 
+    # Tests for reading raw accelerometer values
     def testReadAccXRaw(self):
         self.i2c.write_word(mpu9150.ACCEL_XOUT_L, 0x39bc)
 
         value = self.imu.read_x_acc_raw()
         self.assertEquals(value, 0x39bc)
-
-    def testReadAccX(self):
-        self.i2c.write_word(mpu9150.ACCEL_XOUT_L, 0xf830)
-
-        value = self.imu.read_x_acc()
-        self.assertEquals(value, -2000)
 
     def testReadAccYRaw(self):
         self.i2c.write_word(mpu9150.ACCEL_YOUT_L, 0x48e3)
@@ -48,23 +43,33 @@ class TestMPU9150(unittest.TestCase):
         value = self.imu.read_y_acc_raw()
         self.assertEquals(value, 0x48e3)
 
-    def testReadAccY(self):
-        self.i2c.write_word(mpu9150.ACCEL_YOUT_L, 0xf830)
-
-        value = self.imu.read_y_acc()
-        self.assertEquals(value, -2000)
-
     def testReadAccZRaw(self):
         self.i2c.write_word(mpu9150.ACCEL_ZOUT_L, 0x5a3f)
 
         value = self.imu.read_z_acc_raw()
         self.assertEquals(value, 0x5a3f)
 
+    # Tests for reading accelerometer values compensated for scale factor
+    def testReadAccX(self):
+        self.i2c.write_byte(mpu9150.ACCEL_CONFIG, mpu9150.AFS_SEL_2G << 3)
+        self.i2c.write_word(mpu9150.ACCEL_XOUT_L, 0xc000)
+
+        value = self.imu.read_x_acc()
+        self.assertEquals(value, -1.0)
+
+    def testReadAccY(self):
+        self.i2c.write_byte(mpu9150.ACCEL_CONFIG, mpu9150.AFS_SEL_4G << 3)
+        self.i2c.write_word(mpu9150.ACCEL_YOUT_L, 0xc000)
+
+        value = self.imu.read_y_acc()
+        self.assertEquals(value, -2.0)
+
     def testReadAccZ(self):
-        self.i2c.write_word(mpu9150.ACCEL_ZOUT_L, 0xf830)
+        self.i2c.write_byte(mpu9150.ACCEL_CONFIG, mpu9150.AFS_SEL_16G << 3)
+        self.i2c.write_word(mpu9150.ACCEL_ZOUT_L, 0x8000)
 
         value = self.imu.read_z_acc()
-        self.assertEquals(value, -2000)
+        self.assertEquals(value, -16.0)
 
     def testSetAccFullScaleRange(self):
         self.i2c.write_byte(mpu9150.ACCEL_CONFIG, 0xff)
