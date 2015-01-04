@@ -1,6 +1,6 @@
 import unittest
 
-from mock import MagicMock, call
+from mock import MagicMock
 
 from mpu9150 import mpu9150
 from i2c_interface import i2c_interface
@@ -13,10 +13,18 @@ class TestMPU9150(unittest.TestCase):
 
     def testReadAccX(self):
         self.i2c.read_word = MagicMock(return_value=0x39bc)
-        accX = self.imu.read_x_acc()
-        expected = [call(mpu9150.ACCEL_XOUT_L)]
-        self.assertEquals(self.i2c.read_word.call_args_list, expected)
-        self.assertEquals(accX, 0x39bc)
+        value = self.imu.read_x_acc()
+        self.assertEquals(value, 0x39bc)
+
+    def testReadAccY(self):
+        self.i2c.read_word = MagicMock(return_value=0x48e3)
+        value = self.imu.read_y_acc()
+        self.assertEquals(value, 0x48e3)
+
+    def testReadAccZ(self):
+        self.i2c.read_word = MagicMock(return_value=0x5a3f)
+        value = self.imu.read_z_acc()
+        self.assertEquals(value, 0x5a3f)
 
 
 if __name__ == "__main__":
