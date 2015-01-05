@@ -1,13 +1,10 @@
-import sys
-sys.path.append("../../Adafruit_Python_GPIO/Adafruit_GPIO")
-
 import i2c_interface
-import I2C
+from Adafruit_GPIO import I2C
 
 class Device(i2c_interface):
 
     def __init__(self):
-        self.i2c = I2C.get_i2c_device(0x1f)
+        self.i2c = I2C.get_i2c_device(0x68)
 
     def read_byte(self, address):
         return self.i2c.readU8(address)
