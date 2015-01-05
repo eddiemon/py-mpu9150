@@ -78,9 +78,21 @@ class TestMPU9150(unittest.TestCase):
         self.assertEquals(self.i2c.read_byte(mpu9150.ACCEL_CONFIG), 0xef)
 
     def testSetSampleRateDivider(self):
+        self.i2c.write_byte(mpu9150.SMPRT_DIV, 0xff)
         self.imu.set_sample_rate_divider(0x3c)
         self.assertEqual(self.i2c.read_byte(mpu9150.SMPRT_DIV), 0x3c)
 
+    def testSetSleepState(self):
+        self.i2c.write_byte(mpu9150.PWR_MGMT_1, 0xff)
+
+        self.imu.set_sleep_state(0)
+        self.assertEqual(self.i2c.read_byte(mpu9150.PWR_MGMT_1), 0xbf)
+
+    def testSelectClockSource(self):
+        self.i2c.write_byte(mpu9150.PWR_MGMT_1, 0xff)
+
+        self.imu.select_clock_source(2)
+        self.assertEqual(self.i2c.read_byte(mpu9150.PWR_MGMT_1), 0xfa)
 
 
 if __name__ == "__main__":
